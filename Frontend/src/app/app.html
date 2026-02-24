@@ -57,9 +57,14 @@
 
     <!-- LISTA DE PRODUCTOS -->
     <div class="lista-productos" *ngIf="!cargandoProductos">
-      <!-- Mensaje cuando no hay productos -->
-      <div *ngIf="obtenerProductosPorTipo(tabActivo).length === 0 && productos.length === 0" class="sin-productos">
+      <!-- Mensaje cuando no hay ningún producto cargado -->
+      <div *ngIf="productos.length === 0" class="sin-productos">
         <p>No hay ofertas disponibles. Seleccione una localidad y presione "Traer Oferta".</p>
+      </div>
+
+      <!-- Mensaje cuando hay productos pero el tab actual está vacío -->
+      <div *ngIf="productos.length > 0 && obtenerProductosPorTipo(tabActivo).length === 0" class="sin-productos">
+        <p>No hay ofertas de tipo {{ tabActivo === 'Combo' ? 'Combo' : tabActivo === 'Tv' ? 'Flow' : 'Personal' }} para esta zona.</p>
       </div>
 
       <!-- CARD DE PRODUCTO (componente hijo, se repite por cada producto) -->

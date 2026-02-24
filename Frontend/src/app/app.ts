@@ -132,13 +132,16 @@ export class App implements OnInit {
 
     const disponibilidad = this.localidadSeleccionada.disponibilidad;
 
-    // Si ya hay productos cargados y la disponibilidad cambió, vaciar el carrito
-    // para evitar inconsistencias (ej: productos de CABA con localidad de Resto País)
-    if (this.productos.length > 0 && this.productos[0].disponibilidad !== disponibilidad) {
-      if (this.carrito.length > 0) {
-        this.carrito = [];
-        this.guardarCarritoEnStorage();
-      }
+    // Si la disponibilidad cambió respecto a los productos actuales O a la zona guardada
+    // en localStorage (caso recarga), vaciar el carrito para evitar inconsistencias
+    const zonaGuardada = localStorage.getItem('carrito_zona');
+    const zonaCambio = (this.productos.length > 0 && this.productos[0].disponibilidad !== disponibilidad)
+                    || (zonaGuardada && zonaGuardada !== disponibilidad);
+
+    if (zonaCambio && this.carrito.length > 0) {
+      this.carrito = [];
+      this.guardarCarritoEnStorage();
+      this.toast.mostrar('El carrito se vació porque cambiaste de zona.', 'info');
     }
 
     this.cargandoProductos = true;
@@ -361,6 +364,7 @@ export class App implements OnInit {
     };
     this.carrito.push(item);
     this.guardarCarritoEnStorage();
+    this.toast.mostrar(`"${producto.nombre}" agregado al carrito.`, 'exito');
   }
 
   /**
@@ -398,6 +402,7 @@ export class App implements OnInit {
     };
     this.carrito.push(item);
     this.guardarCarritoEnStorage();
+    this.toast.mostrar(`Adicional "${adicional.nombre}" agregado al carrito.`, 'exito');
   }
 
   // ================================================================
@@ -483,14 +488,21 @@ export class App implements OnInit {
   /**
    * Guarda el carrito actual en localStorage para que persista
    * si el usuario recarga la página.
+   * También guarda la disponibilidad de la zona actual para poder
+   * validar la compatibilidad al recargar.
    */
   guardarCarritoEnStorage(): void {
     localStorage.setItem('carrito', JSON.stringify(this.carrito));
+    // Guardamos la disponibilidad de la zona para validar al recargar
+    if (this.productos.length > 0) {
+      localStorage.setItem('carrito_zona', this.productos[0].disponibilidad);
+    }
   }
 
   /**
    * Carga el carrito guardado desde localStorage al iniciar la app.
    * Si no hay datos guardados o son inválidos, el carrito queda vacío.
+   * El carrito se limpiará automáticamente si la zona cambia al traer ofertas.
    */
   cargarCarritoDesdeStorage(): void {
     try {
