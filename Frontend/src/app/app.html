@@ -1,0 +1,141 @@
+<div class="contenedor" [class.modo-oscuro]="modoOscuro">
+
+  <!-- ========== SIDEBAR ========== -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h2>Recomendador Personal</h2>
+      <button class="btn-tema" (click)="toggleModoOscuro()">
+        {{ modoOscuro ? '☀️' : '🌙' }}
+      </button>
+    </div>
+
+    <div class="sidebar-seccion">
+      <label>Localidad y Provincia:</label>
+      <select [(ngModel)]="localidadSeleccionada">
+        <option [ngValue]="null" disabled>Seleccione una localidad</option>
+        <option *ngFor="let loc of localidades" [ngValue]="loc">
+          {{ loc.nombre }} - {{ loc.provincia }}
+        </option>
+      </select>
+    </div>
+
+    <div class="sidebar-botones">
+      <button class="btn-traer" (click)="traerOferta()">Traer Oferta</button>
+      <button class="btn-borrar" (click)="borrarTodo()">Borrar Todo</button>
+    </div>
+  </aside>
+
+  <!-- ========== CONTENIDO PRINCIPAL ========== -->
+  <main class="contenido-principal">
+
+    <!-- TABS -->
+    <div class="tabs">
+      <button
+        [class.tab-activo]="tabActivo === 'Combo'"
+        (click)="tabActivo = 'Combo'">
+        Combos
+      </button>
+      <button
+        [class.tab-activo]="tabActivo === 'Tv'"
+        (click)="tabActivo = 'Tv'">
+        Flow
+      </button>
+      <button
+        [class.tab-activo]="tabActivo === 'Internet'"
+        (click)="tabActivo = 'Internet'">
+        Personal
+      </button>
+      <button
+        class="tab-carrito"
+        (click)="carritoAbierto = !carritoAbierto">
+        Carrito ({{ carrito.length }})
+      </button>
+    </div>
+
+    <!-- LISTA DE PRODUCTOS -->
+    <div class="lista-productos">
+      <div *ngIf="obtenerProductosPorTipo(tabActivo).length === 0" class="sin-productos">
+        <p>No hay ofertas disponibles. Seleccione una localidad y presione "Traer Oferta".</p>
+      </div>
+
+      <!-- CARD DE PRODUCTO -->
+      <div *ngFor="let producto of obtenerProductosPorTipo(tabActivo)" class="card-producto">
+        <div class="card-header">
+          <div class="card-logo">TELECOM</div>
+          <div class="card-info">
+            <h3>{{ producto.nombre }}</h3>
+            <p *ngIf="producto.promo">Promo: {{ producto.promo }}</p>
+            <p *ngIf="producto.id_promo">ID Promo: {{ producto.id_promo }}</p>
+          </div>
+          <div class="card-precios">
+            <span class="precio-lista">${{ producto.precio_lista }}</span>
+            <span class="precio-final">${{ producto.precio_final }}</span>
+          </div>
+          <button class="btn-agregar"
+                  (click)="agregarProductoAlCarrito(producto)"
+                  [disabled]="productoEnCarrito(producto.id)">
+            {{ productoEnCarrito(producto.id) ? '✔' : '🛒' }}
+          </button>
+          <button class="btn-toggle" (click)="toggleAdicionales(producto.id)">
+            {{ adicionalesAbiertos[producto.id] ? '▲' : '▼' }}
+          </button>
+        </div>
+
+        <!-- ADICIONALES DESPLEGABLES -->
+        <div *ngIf="adicionalesAbiertos[producto.id]" class="adicionales-panel">
+          <h4>Adicionales</h4>
+          <div class="adicionales-lista">
+            <div *ngFor="let adicional of obtenerAdicionalesParaProducto(producto.tipo)"
+                 class="adicional-item"
+                 [class.en-carrito]="adicionalEnCarrito(adicional.id)">
+              <span class="adicional-nombre">{{ adicional.nombre }}</span>
+              <span class="adicional-precio">${{ adicional.precio_final }}</span>
+              <span *ngIf="adicional.promo" class="adicional-promo">{{ adicional.promo }}</span>
+              <button class="btn-agregar-adicional"
+                      (click)="agregarAdicionalAlCarrito(adicional)"
+                      [disabled]="adicionalEnCarrito(adicional.id)">
+                {{ adicionalEnCarrito(adicional.id) ? '✔' : '🛒' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ========== CARRITO (PANEL LATERAL) ========== -->
+  <aside *ngIf="carritoAbierto" class="carrito-panel">
+    <div class="carrito-header">
+      <h2>Carrito</h2>
+      <button class="btn-cerrar" (click)="carritoAbierto = false">✕</button>
+    </div>
+
+    <div *ngIf="carrito.length === 0" class="carrito-vacio">
+      <p>El carrito está vacío</p>
+    </div>
+
+    <div class="carrito-items">
+      <div *ngFor="let item of carrito; let i = index" class="carrito-item">
+        <div class="carrito-item-info">
+          <span class="carrito-item-nombre">{{ item.nombre }}</span>
+          <span class="carrito-item-tipo">({{ item.tipo }})</span>
+        </div>
+        <span class="carrito-item-precio">${{ item.precio_final }}</span>
+        <button class="btn-eliminar" (click)="eliminarDelCarrito(i)">🗑️</button>
+      </div>
+    </div>
+
+    <div *ngIf="carrito.length > 0" class="carrito-totales">
+      <div class="carrito-total">
+        <span>Primera Factura:</span>
+        <span class="total-valor">${{ calcularPrimeraFactura() }}</span>
+      </div>
+      <div class="carrito-ahorro">
+        <span>Ahorro Total:</span>
+        <span class="ahorro-valor">${{ calcularAhorroTotal() }}</span>
+      </div>
+      <button class="btn-vaciar" (click)="vaciarCarrito()">Vaciar Carrito</button>
+    </div>
+  </aside>
+
+</div>
