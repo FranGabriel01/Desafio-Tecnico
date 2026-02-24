@@ -1,0 +1,39 @@
+<!-- ========== SIDEBAR ========== -->
+<!-- Este componente muestra la barra lateral de navegación -->
+
+<aside class="sidebar">
+  <!-- Header: Título + botón modo oscuro -->
+  <div class="sidebar-header">
+    <h2>Recomendador Personal</h2>
+    <button class="btn-tema" (click)="toggleModoOscuro()">
+      {{ modoOscuro ? '☀️' : '🌙' }}
+    </button>
+  </div>
+
+  <!-- Selector de localidad -->
+  <div class="sidebar-seccion">
+    <label>Localidad y Provincia:</label>
+    <select
+      [(ngModel)]="localidadSeleccionada"
+      [disabled]="cargandoLocalidades"
+      (ngModelChange)="alCambiarLocalidad()">
+      <option [ngValue]="null" disabled>
+        {{ cargandoLocalidades ? 'Cargando localidades...' : 'Seleccione una localidad' }}
+      </option>
+      <option *ngFor="let loc of localidades" [ngValue]="loc">
+        {{ loc.nombre }} - {{ loc.provincia }}
+      </option>
+    </select>
+    <span *ngIf="cargandoLocalidades" class="cargando-texto">⏳ Descargando localidades...</span>
+  </div>
+
+  <!-- Botones de acción -->
+  <div class="sidebar-botones">
+    <button class="btn-traer"
+            (click)="traerOferta()"
+            [disabled]="!localidadSeleccionada">
+      Traer Oferta
+    </button>
+    <button class="btn-borrar" (click)="borrarTodo()">Borrar Todo</button>
+  </div>
+</aside>

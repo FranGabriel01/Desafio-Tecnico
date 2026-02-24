@@ -1,0 +1,55 @@
+<!-- ========== CARD DE PRODUCTO ========== -->
+<!-- Muestra una card individual con los datos del producto y sus adicionales -->
+
+<div class="card-producto">
+  <!-- Header: Logo + Info + Precios + Botones -->
+  <div class="card-header">
+    <div class="card-logo">TELECOM</div>
+
+    <!-- Información del producto -->
+    <div class="card-info">
+      <h3>{{ producto.nombre }}</h3>
+      <p *ngIf="producto.promo">Promo: {{ producto.promo }}</p>
+      <p *ngIf="producto.id_promo">ID Promo: {{ producto.id_promo }}</p>
+    </div>
+
+    <!-- Precios -->
+    <div class="card-precios">
+      <span class="precio-lista">{{ producto.precio_lista | formatoPrecio }}</span>
+      <span class="precio-final">{{ producto.precio_final | formatoPrecio }}</span>
+    </div>
+
+    <!-- Botón agregar al carrito -->
+    <button class="btn-agregar"
+            [class.agregado]="estaEnCarrito"
+            (click)="agregarProducto()"
+            [disabled]="estaEnCarrito">
+      {{ estaEnCarrito ? '✔ Agregado' : '🛒 Agregar' }}
+    </button>
+
+    <!-- Botón toggle adicionales -->
+    <button class="btn-toggle" (click)="toggleAdicionales()">
+      {{ adicionalesAbiertos ? '▲ Ocultar' : '▼ Adicionales' }}
+    </button>
+  </div>
+
+  <!-- Panel de adicionales desplegable -->
+  <div *ngIf="adicionalesAbiertos" class="adicionales-panel">
+    <h4>Adicionales</h4>
+    <div class="adicionales-lista">
+      <div *ngFor="let adicional of adicionales"
+           class="adicional-item"
+           [class.en-carrito]="verificarAdicionalEnCarrito(adicional.id)">
+        <span class="adicional-nombre">{{ adicional.nombre }}</span>
+        <span class="adicional-precio">{{ adicional.precio_final | formatoPrecio }}</span>
+        <span *ngIf="adicional.promo" class="adicional-promo">{{ adicional.promo }}</span>
+        <button class="btn-agregar-adicional"
+                [class.agregado]="verificarAdicionalEnCarrito(adicional.id)"
+                (click)="agregarAdicional(adicional)"
+                [disabled]="verificarAdicionalEnCarrito(adicional.id)">
+          {{ verificarAdicionalEnCarrito(adicional.id) ? '✔ Agregado' : '+ Agregar' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

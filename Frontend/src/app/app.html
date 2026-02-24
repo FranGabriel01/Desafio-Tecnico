@@ -1,31 +1,23 @@
+<!-- ========== LAYOUT PRINCIPAL ========== -->
+<!-- El padre (App) coordina los 3 componentes hijos pasándoles datos y escuchando eventos -->
+
 <div class="contenedor" [class.modo-oscuro]="modoOscuro">
 
-  <!-- ========== SIDEBAR ========== -->
-  <aside class="sidebar">
-    <div class="sidebar-header">
-      <h2>Recomendador Personal</h2>
-      <button class="btn-tema" (click)="toggleModoOscuro()">
-        {{ modoOscuro ? '☀️' : '🌙' }}
-      </button>
-    </div>
+  <!-- ========== 1. SIDEBAR (componente hijo) ========== -->
+  <!-- Le pasamos datos con [] y escuchamos eventos con () -->
+  <app-sidebar
+    [localidades]="localidades"
+    [cargandoLocalidades]="cargandoLocalidades"
+    [modoOscuro]="modoOscuro"
+    [localidadSeleccionada]="localidadSeleccionada"
+    (alSeleccionarLocalidad)="seleccionarLocalidad($event)"
+    (alTraerOferta)="traerOferta()"
+    (alBorrarTodo)="borrarTodo()"
+    (alToggleModoOscuro)="toggleModoOscuro()">
+  </app-sidebar>
 
-    <div class="sidebar-seccion">
-      <label>Localidad y Provincia:</label>
-      <select [(ngModel)]="localidadSeleccionada">
-        <option [ngValue]="null" disabled>Seleccione una localidad</option>
-        <option *ngFor="let loc of localidades" [ngValue]="loc">
-          {{ loc.nombre }} - {{ loc.provincia }}
-        </option>
-      </select>
-    </div>
-
-    <div class="sidebar-botones">
-      <button class="btn-traer" (click)="traerOferta()">Traer Oferta</button>
-      <button class="btn-borrar" (click)="borrarTodo()">Borrar Todo</button>
-    </div>
-  </aside>
-
-  <!-- ========== CONTENIDO PRINCIPAL ========== -->
+  <!-- ========== 2. CONTENIDO PRINCIPAL ========== -->
+  <!-- Los tabs y las cards siguen en el padre porque el padre maneja el tab activo -->
   <main class="contenido-principal">
 
     <!-- TABS -->
@@ -52,90 +44,56 @@
       </button>
     </div>
 
+    <!-- MENSAJE DE ERROR (si falla alguna petición HTTP) -->
+    <div *ngIf="mensajeError" class="mensaje-error">
+      <span>⚠️ {{ mensajeError }}</span>
+      <button class="btn-cerrar-error" (click)="mensajeError = ''">✕</button>
+    </div>
+
+    <!-- INDICADOR DE CARGA DE PRODUCTOS -->
+    <div *ngIf="cargandoProductos" class="cargando-productos">
+      <p>⏳ Cargando ofertas...</p>
+    </div>
+
     <!-- LISTA DE PRODUCTOS -->
-    <div class="lista-productos">
-      <div *ngIf="obtenerProductosPorTipo(tabActivo).length === 0" class="sin-productos">
+    <div class="lista-productos" *ngIf="!cargandoProductos">
+      <!-- Mensaje cuando no hay productos -->
+      <div *ngIf="obtenerProductosPorTipo(tabActivo).length === 0 && productos.length === 0" class="sin-productos">
         <p>No hay ofertas disponibles. Seleccione una localidad y presione "Traer Oferta".</p>
       </div>
 
-      <!-- CARD DE PRODUCTO -->
-      <div *ngFor="let producto of obtenerProductosPorTipo(tabActivo)" class="card-producto">
-        <div class="card-header">
-          <div class="card-logo">TELECOM</div>
-          <div class="card-info">
-            <h3>{{ producto.nombre }}</h3>
-            <p *ngIf="producto.promo">Promo: {{ producto.promo }}</p>
-            <p *ngIf="producto.id_promo">ID Promo: {{ producto.id_promo }}</p>
-          </div>
-          <div class="card-precios">
-            <span class="precio-lista">${{ producto.precio_lista }}</span>
-            <span class="precio-final">${{ producto.precio_final }}</span>
-          </div>
-          <button class="btn-agregar"
-                  (click)="agregarProductoAlCarrito(producto)"
-                  [disabled]="productoEnCarrito(producto.id)">
-            {{ productoEnCarrito(producto.id) ? '✔' : '🛒' }}
-          </button>
-          <button class="btn-toggle" (click)="toggleAdicionales(producto.id)">
-            {{ adicionalesAbiertos[producto.id] ? '▲' : '▼' }}
-          </button>
-        </div>
-
-        <!-- ADICIONALES DESPLEGABLES -->
-        <div *ngIf="adicionalesAbiertos[producto.id]" class="adicionales-panel">
-          <h4>Adicionales</h4>
-          <div class="adicionales-lista">
-            <div *ngFor="let adicional of obtenerAdicionalesParaProducto(producto.tipo)"
-                 class="adicional-item"
-                 [class.en-carrito]="adicionalEnCarrito(adicional.id)">
-              <span class="adicional-nombre">{{ adicional.nombre }}</span>
-              <span class="adicional-precio">${{ adicional.precio_final }}</span>
-              <span *ngIf="adicional.promo" class="adicional-promo">{{ adicional.promo }}</span>
-              <button class="btn-agregar-adicional"
-                      (click)="agregarAdicionalAlCarrito(adicional)"
-                      [disabled]="adicionalEnCarrito(adicional.id)">
-                {{ adicionalEnCarrito(adicional.id) ? '✔' : '🛒' }}
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <!-- CARD DE PRODUCTO (componente hijo, se repite por cada producto) -->
+      <!-- Cada card recibe SU producto, SUS adicionales y el estado del carrito -->
+      <app-card-producto
+        *ngFor="let producto of obtenerProductosPorTipo(tabActivo)"
+        [producto]="producto"
+        [adicionales]="obtenerAdicionalesParaProducto(producto.tipo)"
+        [estaEnCarrito]="productoEnCarrito(producto.id)"
+        [adicionalesEnCarrito]="obtenerIdsAdicionalesEnCarrito()"
+        (alAgregarProducto)="agregarProductoAlCarrito($event)"
+        (alAgregarAdicional)="agregarAdicionalAlCarrito($event)">
+      </app-card-producto>
     </div>
   </main>
 
-  <!-- ========== CARRITO (PANEL LATERAL) ========== -->
-  <aside *ngIf="carritoAbierto" class="carrito-panel">
-    <div class="carrito-header">
-      <h2>Carrito</h2>
-      <button class="btn-cerrar" (click)="carritoAbierto = false">✕</button>
-    </div>
+  <!-- ========== 3. CARRITO (componente hijo) ========== -->
+  <!-- Solo se muestra cuando carritoAbierto es true -->
+  <app-carrito
+    *ngIf="carritoAbierto"
+    [carrito]="carrito"
+    [primeraFactura]="calcularPrimeraFactura()"
+    [ahorroTotal]="calcularAhorroTotal()"
+    (alCerrar)="carritoAbierto = false"
+    (alEliminarItem)="eliminarDelCarrito($event)"
+    (alVaciarCarrito)="vaciarCarrito()">
+  </app-carrito>
 
-    <div *ngIf="carrito.length === 0" class="carrito-vacio">
-      <p>El carrito está vacío</p>
-    </div>
+  <!-- ========== 4. TOAST (notificaciones) ========== -->
+  <!-- Dentro del contenedor para que detecte .modo-oscuro con :host-context -->
+  <app-toast #toast></app-toast>
 
-    <div class="carrito-items">
-      <div *ngFor="let item of carrito; let i = index" class="carrito-item">
-        <div class="carrito-item-info">
-          <span class="carrito-item-nombre">{{ item.nombre }}</span>
-          <span class="carrito-item-tipo">({{ item.tipo }})</span>
-        </div>
-        <span class="carrito-item-precio">${{ item.precio_final }}</span>
-        <button class="btn-eliminar" (click)="eliminarDelCarrito(i)">🗑️</button>
-      </div>
-    </div>
-
-    <div *ngIf="carrito.length > 0" class="carrito-totales">
-      <div class="carrito-total">
-        <span>Primera Factura:</span>
-        <span class="total-valor">${{ calcularPrimeraFactura() }}</span>
-      </div>
-      <div class="carrito-ahorro">
-        <span>Ahorro Total:</span>
-        <span class="ahorro-valor">${{ calcularAhorroTotal() }}</span>
-      </div>
-      <button class="btn-vaciar" (click)="vaciarCarrito()">Vaciar Carrito</button>
-    </div>
-  </aside>
+  <!-- ========== 5. MODAL DE CONFIRMACIÓN ========== -->
+  <!-- Dentro del contenedor para que detecte .modo-oscuro con :host-context -->
+  <app-modal-confirmacion #modalConfirmacion></app-modal-confirmacion>
 
 </div>

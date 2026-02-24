@@ -1,11 +1,25 @@
 const axios = require('axios');
 
+// --- Caché en memoria ---
+// Guardamos las localidades para no consultar la API externa en cada petición
+let cacheLocalidades = null;
+
 /**
  * Obtiene todas las localidades de Argentina desde la API del gobierno
+ * Usa caché en memoria: la primera vez consulta la API externa,
+ * las siguientes devuelve los datos guardados instantáneamente.
  * @returns {Promise<Array>} Array de localidades con formato: {id, nombre, provincia, disponibilidad}
  */
 const obtenerLocalidades = async () => {
   try {
+    // Si ya tenemos las localidades en caché, las devolvemos sin consultar la API
+    if (cacheLocalidades) {
+      console.log('📦 Localidades servidas desde caché');
+      return cacheLocalidades;
+    }
+
+    console.log('🌐 Consultando API externa de localidades...');
+
     // Hacemos la petición a la API del gobierno argentino
     const response = await axios.get('https://apis.datos.gob.ar/georef/api/localidades?max=5000');
     
@@ -29,6 +43,13 @@ const obtenerLocalidades = async () => {
         disponibilidad: disponibilidad
       };
     });
+
+    // Ordenamos alfabéticamente por nombre para facilitar la búsqueda
+    localidadesMapeadas.sort((a, b) => a.nombre.localeCompare(b.nombre));
+    
+    // Guardamos en caché para las próximas peticiones
+    cacheLocalidades = localidadesMapeadas;
+    console.log(`✅ ${localidadesMapeadas.length} localidades cargadas y cacheadas`);
     
     return localidadesMapeadas;
     

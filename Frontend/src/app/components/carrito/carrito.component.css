@@ -1,0 +1,166 @@
+/* ========== CARRITO ========== */
+.carrito-panel {
+  width: 320px;
+  background: white;
+  border-left: 2px solid #ddd;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.carrito-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.carrito-header h2 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.btn-cerrar {
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #666;
+}
+
+.btn-cerrar:hover {
+  color: #333;
+}
+
+.carrito-vacio {
+  text-align: center;
+  color: #999;
+  padding: 20px;
+}
+
+.carrito-items {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.carrito-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+  gap: 8px;
+}
+
+.carrito-item-info {
+  flex: 1;
+}
+
+.carrito-item-nombre {
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.carrito-item-tipo {
+  font-size: 0.75rem;
+  color: #999;
+}
+
+.carrito-item-precio {
+  color: #00b4d8;
+  font-weight: bold;
+}
+
+.btn-eliminar {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.carrito-totales {
+  border-top: 2px solid #ddd;
+  padding-top: 16px;
+  margin-top: 16px;
+}
+
+.carrito-total, .carrito-ahorro {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.total-valor {
+  color: #00b4d8;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.ahorro-valor {
+  color: #00b894;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.btn-vaciar {
+  width: 100%;
+  padding: 10px;
+  background-color: #e17055;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 12px;
+  font-size: 0.9rem;
+}
+
+.btn-vaciar:hover {
+  background-color: #d15045;
+}
+
+/* ========== MODO OSCURO ========== */
+:host-context(.modo-oscuro) .carrito-panel {
+  background: #1a1a2e;
+  border-left-color: #333;
+}
+
+:host-context(.modo-oscuro) .carrito-header h2 {
+  color: #e0e0e0;
+}
+
+:host-context(.modo-oscuro) .btn-cerrar {
+  color: #999;
+}
+
+:host-context(.modo-oscuro) .btn-cerrar:hover {
+  color: #e0e0e0;
+}
+
+:host-context(.modo-oscuro) .carrito-vacio {
+  color: #666;
+}
+
+:host-context(.modo-oscuro) .carrito-item {
+  border-bottom-color: #333;
+}
+
+:host-context(.modo-oscuro) .carrito-item-nombre {
+  color: #e0e0e0;
+}
+
+:host-context(.modo-oscuro) .carrito-item-tipo {
+  color: #888;
+}
+
+:host-context(.modo-oscuro) .carrito-totales {
+  border-top-color: #333;
+}
+
+:host-context(.modo-oscuro) .carrito-total,
+:host-context(.modo-oscuro) .carrito-ahorro {
+  color: #e0e0e0;
+}

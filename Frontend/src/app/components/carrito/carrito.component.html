@@ -1,0 +1,40 @@
+<!-- ========== CARRITO (PANEL LATERAL) ========== -->
+<!-- Muestra los items del carrito, totales y acciones -->
+
+<aside class="carrito-panel">
+  <!-- Header: Título + botón cerrar -->
+  <div class="carrito-header">
+    <h2>Carrito</h2>
+    <button class="btn-cerrar" (click)="cerrarCarrito()">✕</button>
+  </div>
+
+  <!-- Mensaje cuando el carrito está vacío -->
+  <div *ngIf="carrito.length === 0" class="carrito-vacio">
+    <p>El carrito está vacío</p>
+  </div>
+
+  <!-- Lista de items en el carrito -->
+  <div class="carrito-items">
+    <div *ngFor="let item of carrito; let i = index" class="carrito-item">
+      <div class="carrito-item-info">
+        <span class="carrito-item-nombre">{{ item.nombre }}</span>
+        <span class="carrito-item-tipo">({{ item.tipo === 'producto' ? item.tipoProducto : 'Adicional ' + item.tipoAdicional }})</span>
+      </div>
+      <span class="carrito-item-precio">{{ item.precio_final | formatoPrecio }}</span>
+      <button class="btn-eliminar" (click)="eliminarItem(i)">🗑️</button>
+    </div>
+  </div>
+
+  <!-- Totales y botón vaciar (solo si hay items) -->
+  <div *ngIf="carrito.length > 0" class="carrito-totales">
+    <div class="carrito-total">
+      <span>Primera Factura:</span>
+      <span class="total-valor">{{ primeraFactura | formatoPrecio }}</span>
+    </div>
+    <div class="carrito-ahorro">
+      <span>Ahorro Total:</span>
+      <span class="ahorro-valor">{{ ahorroTotal | formatoPrecio }}</span>
+    </div>
+    <button class="btn-vaciar" (click)="vaciarCarrito()">Vaciar Carrito</button>
+  </div>
+</aside>
