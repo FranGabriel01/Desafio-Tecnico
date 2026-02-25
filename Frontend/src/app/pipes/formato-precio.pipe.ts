@@ -1,7 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 /**
- * Pipe personalizado para formatear precios al estilo argentino.
+ * Pipe personalizado para formatear precios
  * Ejemplo: 14500 → "$14.500,00"
  * 
  * Uso en el HTML: {{ producto.precio_final | formatoPrecio }}
@@ -13,7 +13,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class FormatoPrecioPipe implements PipeTransform {
 
   /**
-   * Recibe un número y lo devuelve formateado como precio argentino.
+   * Recibe un número y lo devuelve formateado como precio
    * @param valor - El número a formatear (ej: 14500)
    * @returns String formateado (ej: "$14.500,00")
    */

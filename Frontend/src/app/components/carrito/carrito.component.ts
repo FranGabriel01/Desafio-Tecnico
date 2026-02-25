@@ -30,7 +30,10 @@ export class CarritoComponent {
   /** Array con todos los items del carrito */
   @Input() carrito: ItemCarrito[] = [];
 
-  /** Monto total de la primera factura (calculado por el padre) */
+  /** Suma de precios de lista (sin promoción) - calculado por el padre */
+  @Input() precioListaTotal: number = 0;
+
+  /** Monto total de la primera factura / con promoción (calculado por el padre) */
   @Input() primeraFactura: number = 0;
 
   /** Monto total del ahorro (calculado por el padre) */

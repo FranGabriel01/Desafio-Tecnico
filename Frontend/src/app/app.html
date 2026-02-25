@@ -86,6 +86,7 @@
   <app-carrito
     *ngIf="carritoAbierto"
     [carrito]="carrito"
+    [precioListaTotal]="calcularPrecioListaTotal()"
     [primeraFactura]="calcularPrimeraFactura()"
     [ahorroTotal]="calcularAhorroTotal()"
     (alCerrar)="carritoAbierto = false"

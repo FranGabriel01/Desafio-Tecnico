@@ -521,7 +521,14 @@ export class App implements OnInit {
   // ================================================================
 
   /**
-   * Calcula la Primera Factura (suma de precios finales).
+   * Calcula la suma de precios de lista (sin promoción) del carrito.
+   */
+  calcularPrecioListaTotal(): number {
+    return this.carrito.reduce((total, item) => total + Number(item.precio_lista), 0);
+  }
+
+  /**
+   * Calcula la Primera Factura (suma de precios finales / con promoción).
    */
   calcularPrimeraFactura(): number {
     return this.carrito.reduce((total, item) => total + Number(item.precio_final), 0);

@@ -86,12 +86,18 @@
   margin-top: 16px;
 }
 
-.carrito-total, .carrito-ahorro {
+.carrito-fila {
   display: flex;
   justify-content: space-between;
   margin-bottom: 8px;
   font-size: 0.95rem;
   color: #333;
+}
+
+.valor-lista {
+  color: #666;
+  text-decoration: line-through;
+  font-size: 0.9rem;
 }
 
 .total-valor {
@@ -160,7 +166,10 @@
   border-top-color: #333;
 }
 
-:host-context(.modo-oscuro) .carrito-total,
-:host-context(.modo-oscuro) .carrito-ahorro {
+:host-context(.modo-oscuro) .carrito-fila {
   color: #e0e0e0;
+}
+
+:host-context(.modo-oscuro) .valor-lista {
+  color: #888;
 }

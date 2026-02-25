@@ -27,13 +27,17 @@
 
   <!-- Totales y botón vaciar (solo si hay items) -->
   <div *ngIf="carrito.length > 0" class="carrito-totales">
-    <div class="carrito-total">
-      <span>Primera Factura:</span>
-      <span class="total-valor">{{ primeraFactura | formatoPrecio }}</span>
+    <div class="carrito-fila">
+      <span>Precio lista</span>
+      <span class="valor-lista">{{ precioListaTotal | formatoPrecio }}</span>
     </div>
-    <div class="carrito-ahorro">
-      <span>Ahorro Total:</span>
+    <div class="carrito-fila">
+      <span>Total ahorro</span>
       <span class="ahorro-valor">{{ ahorroTotal | formatoPrecio }}</span>
+    </div>
+    <div class="carrito-fila">
+      <span>Total primera factura</span>
+      <span class="total-valor">{{ primeraFactura | formatoPrecio }}</span>
     </div>
     <button class="btn-vaciar" (click)="vaciarCarrito()">Vaciar Carrito</button>
   </div>
