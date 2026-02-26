@@ -146,3 +146,14 @@ La aplicación estará disponible en **http://localhost:4200**.
 
 
 **Franco Gabriel** — [GitHub](https://github.com/FranGabriel01/Desafio-Tecnico)
+
+
+<img width="2560" height="1392" alt="Sin título6" src="https://github.com/user-attachments/assets/248dd660-39fb-4424-a8dc-3ef50d60f0ca" />
+<img width="2560" height="1392" alt="Sin título5" src="https://github.com/user-attachments/assets/f0b1044b-0004-41ed-930c-fa48075e3b39" />
+<img width="2560" height="1392" alt="Sin título4" src="https://github.com/user-attachments/assets/290344cd-7e03-4d83-8640-9994de6c2f22" />
+<img width="2560" height="1392" alt="Sin título3" src="https://github.com/user-attachments/assets/2080d649-03b7-4c11-af03-51eadf15b546" />
+<img width="2560" height="1392" alt="VistaCombo" src="https://github.com/user-attachments/assets/789489dc-3245-41a4-bf2f-11b410632517" />
+<img width="2560" height="1392" alt="Vista" src="https://github.com/user-attachments/assets/b60fc96c-4c69-4e4c-a13c-b637588c799d" />
+
+
+
