@@ -134,7 +134,7 @@ La aplicación estará disponible en **http://localhost:4200**.
 
 ---
 
-## Buenas Prácticas Aplicadas
+## Prácticas Aplicadas
 
 - **Seguridad:** Uso de consultas SQL parametrizadas para evitar inyecciones SQL.
 - **Rendimiento:** Implementación de caché en memoria en el backend para la carga de localidades, evitando saturar la API externa.
